@@ -1,0 +1,8 @@
+# La Tavernetta - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://latavernetta.rs/sitemap.xml

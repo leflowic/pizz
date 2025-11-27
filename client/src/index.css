@@ -1,0 +1,239 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+
+  --radius-sm: 0.2rem;
+  --radius-md: 0.4rem;
+  --radius-lg: 0.6rem;
+  --radius-xl: 0.8rem;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Apple Liquid Glass Toast Animations */
+  @keyframes liquid-glass-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+      filter: blur(8px);
+    }
+    60% {
+      transform: translateY(5px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes liquid-glass-exit {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+      filter: blur(8px);
+    }
+  }
+
+  @keyframes liquid-shimmer {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(150%);
+    }
+  }
+}
+
+:root {
+  /* Dark theme by default as per request */
+  /* Slightly warmer/neutral dark background */
+  --background: 0 0% 9%; 
+  --foreground: 0 0% 98%;
+  
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 98%;
+  
+  --popover: 0 0% 12%;
+  --popover-foreground: 0 0% 98%;
+  
+  /* Italian Red / Ferrari Red */
+  --primary: 356 85% 55%;
+  --primary-foreground: 0 0% 98%;
+  
+  /* Italian Green / Basil Green (replacing Neon Yellow) */
+  --secondary: 142 76% 36%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --muted: 0 0% 18%;
+  --muted-foreground: 0 0% 70%;
+  
+  --accent: 0 0% 18%;
+  --accent-foreground: 0 0% 98%;
+  
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 356 85% 55%;
+  
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  /* Hide default cursor only on desktop where custom cursor is visible */
+  @media (min-width: 768px) {
+    * {
+      cursor: none;
+    }
+  }
+  
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+  button, [role="button"], a[class*="button"] {
+    font-family: var(--font-ui);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .clip-slant {
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+  }
+  
+  .clip-slant-inverse {
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  
+  .racing-stripe {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      hsl(var(--primary) / 0.15) 10px,
+      hsl(var(--primary) / 0.15) 20px,
+      transparent 20px,
+      transparent 30px,
+      hsl(var(--secondary) / 0.15) 30px,
+      hsl(var(--secondary) / 0.15) 40px,
+      transparent 40px,
+      transparent 50px,
+      hsl(0 0% 100% / 0.1) 50px,
+      hsl(0 0% 100% / 0.1) 60px
+    );
+  }
+
+  .bg-carbon {
+    background-color: #151515;
+    background-image: 
+      linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black),
+      linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+  }
+  
+  /* Apple Liquid Glass Toast Styles */
+  .liquid-glass-toast {
+    animation: liquid-glass-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass-toast::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 250%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    animation: liquid-shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .liquid-glass-toast[data-removed="true"] {
+    animation: liquid-glass-exit 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .liquid-glass-success {
+    box-shadow: 
+      0 8px 32px 0 rgba(34, 197, 94, 0.2),
+      0 0 20px rgba(34, 197, 94, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .liquid-glass-error {
+    box-shadow: 
+      0 8px 32px 0 rgba(239, 68, 68, 0.2),
+      0 0 20px rgba(239, 68, 68, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .liquid-glass-info {
+    box-shadow: 
+      0 8px 32px 0 rgba(59, 130, 246, 0.2),
+      0 0 20px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .liquid-glass-warning {
+    box-shadow: 
+      0 8px 32px 0 rgba(245, 158, 11, 0.2),
+      0 0 20px rgba(245, 158, 11, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+}
