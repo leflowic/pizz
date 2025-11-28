@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertMenuItemSchema, updateMenuItemSchema, insertGalleryImageSchema } from "@shared/schema";
 import { requireAuth, rateLimitLogin, resetRateLimit } from "./middleware/auth";
+import { uploadToR2, isR2Configured } from "./r2";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,13 +13,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configure multer for image uploads
+// Use memory storage for R2 uploads, disk storage for local fallback
 const uploadDir = path.join(__dirname, "../client/public/uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+const useR2 = isR2Configured();
+console.log(`[upload] R2 configured: ${useR2}`);
+
 const upload = multer({
-  storage: multer.diskStorage({
+  storage: useR2 ? multer.memoryStorage() : multer.diskStorage({
     destination: uploadDir,
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -344,12 +349,25 @@ export async function registerRoutes(app: Express): Promise<{ server: Server; se
   });
 
   // Upload image (admin only)
-  app.post("/api/upload", requireAuth, upload.single("image"), (req, res) => {
+  app.post("/api/upload", requireAuth, upload.single("image"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ success: false, message: "Slika nije izabrana" });
       }
-      const imageUrl = `/uploads/${req.file.filename}`;
+
+      let imageUrl: string;
+
+      if (useR2 && req.file.buffer) {
+        // Upload to R2
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = uniqueSuffix + path.extname(req.file.originalname);
+        imageUrl = await uploadToR2(req.file.buffer, filename, req.file.mimetype);
+        console.log(`[upload] Uploaded to R2: ${imageUrl}`);
+      } else {
+        // Local fallback
+        imageUrl = `/uploads/${req.file.filename}`;
+      }
+
       res.json({ success: true, message: "Slika upload-ovana!", imageUrl });
     } catch (error) {
       console.error("Error uploading image:", error);
