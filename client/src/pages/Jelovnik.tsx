@@ -24,16 +24,23 @@ const categories = [
 const categoryMapping: Record<string, string> = {
   "pizza": "pizze",
   "pasta": "paste",
+  "salata": "salate",
   "salad": "salate",
+  "sendvic": "sendvici",
+  "sandwich": "sendvici",
+  "glavno_jelo": "jela",
+  "main_course": "jela",
+  "dorucak": "dorucak",
+  "breakfast": "dorucak",
+  "bezalkoholno": "sokovi",
+  "juice": "sokovi",
+  "alkohol": "alkohol",
+  "alcohol": "alkohol",
+  "topli_napici": "kafa",
+  "coffee": "kafa",
   "appetizer": "dodaci",
   "side": "dodaci",
-  "breakfast": "dorucak",
-  "sandwich": "sendvici",
-  "main_course": "jela",
-  "dessert": "deserti",
-  "coffee": "kafa",
-  "juice": "sokovi",
-  "alcohol": "alkohol"
+  "dessert": "deserti"
 };
 
 const pizzaImages: Record<string, string> = {
