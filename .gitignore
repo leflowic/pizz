@@ -31,3 +31,8 @@ coverage/
 
 # Drizzle
 migrations/
+
+# Large assets (images now on Cloudflare R2)
+attached_assets/
+public/menu-images/
+public/uploads/
