@@ -2551,7 +2551,7 @@ export default function AdminDashboard() {
                               toast.success("Uspešno!", {
                                 description: data.message,
                               });
-                              reviewsQuery.refetch();
+                              loadReviews();
                             } else {
                               toast.error("Greška", {
                                 description: data.message,

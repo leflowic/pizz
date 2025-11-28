@@ -4,6 +4,7 @@ const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const R2_ENDPOINT = process.env.R2_ENDPOINT;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || "latavernetta";
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL;
 
 let s3Client: S3Client | null = null;
 
@@ -45,8 +46,11 @@ export async function uploadToR2(
 
   await client.send(command);
   
-  const publicUrl = `${R2_ENDPOINT}/${R2_BUCKET_NAME}/${filename}`;
-  return publicUrl;
+  if (R2_PUBLIC_URL) {
+    return `${R2_PUBLIC_URL}/${filename}`;
+  }
+  
+  return `${R2_ENDPOINT}/${R2_BUCKET_NAME}/${filename}`;
 }
 
 export async function deleteFromR2(filename: string): Promise<void> {
@@ -61,5 +65,8 @@ export async function deleteFromR2(filename: string): Promise<void> {
 }
 
 export function getR2PublicUrl(filename: string): string {
+  if (R2_PUBLIC_URL) {
+    return `${R2_PUBLIC_URL}/${filename}`;
+  }
   return `${R2_ENDPOINT}/${R2_BUCKET_NAME}/${filename}`;
 }
