@@ -6,6 +6,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,6 +65,15 @@ app.use("/uploads", express.static(uploadsPath));
 const menuImagesPath = process.env.NODE_ENV === 'production'
   ? path.join(__dirname, "public/menu-images")
   : path.join(__dirname, "../public/menu-images");
+
+// Debug: Check if menu images folder exists at startup
+if (fs.existsSync(menuImagesPath)) {
+  const files = fs.readdirSync(menuImagesPath);
+  console.log(`[menu-images] Found ${files.length} files in ${menuImagesPath}`);
+} else {
+  console.log(`[menu-images] WARNING: Folder not found at ${menuImagesPath}`);
+}
+
 app.use("/menu-images", express.static(menuImagesPath));
 
 app.use((req, res, next) => {
