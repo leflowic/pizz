@@ -648,6 +648,93 @@ export async function registerRoutes(app: Express): Promise<{ server: Server; se
     }
   });
 
+  // Image Migration to R2 (admin only)
+  app.post("/api/migrate-images-to-r2", requireAuth, async (req, res) => {
+    try {
+      const { isR2Configured } = await import("./r2");
+      
+      if (!isR2Configured()) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "R2 nije konfigurisan. Potrebne su R2 environment varijable." 
+        });
+      }
+
+      const { uploadToR2 } = await import("./r2");
+      const allItems = await storage.getAllMenuItems();
+      
+      let migrated = 0;
+      let skipped = 0;
+      let failed = 0;
+      const results: string[] = [];
+
+      for (const item of allItems) {
+        if (!item.imageUrl) {
+          skipped++;
+          continue;
+        }
+
+        if (item.imageUrl.startsWith("http")) {
+          skipped++;
+          continue;
+        }
+
+        if (!item.imageUrl.startsWith("/menu-images/")) {
+          skipped++;
+          continue;
+        }
+
+        const filename = item.imageUrl.replace("/menu-images/", "");
+        const localPath = path.join(__dirname, "../public/menu-images", filename);
+        
+        // Also check dist path for production
+        const distPath = path.join(__dirname, "../dist/public/menu-images", filename);
+        const prodPath = path.join(__dirname, "public/menu-images", filename);
+        
+        let filePath = "";
+        if (fs.existsSync(localPath)) {
+          filePath = localPath;
+        } else if (fs.existsSync(distPath)) {
+          filePath = distPath;
+        } else if (fs.existsSync(prodPath)) {
+          filePath = prodPath;
+        }
+
+        if (!filePath) {
+          results.push(`[FAIL] ${item.name} - fajl nije pronađen`);
+          failed++;
+          continue;
+        }
+
+        try {
+          const fileBuffer = fs.readFileSync(filePath);
+          const ext = path.extname(filename).toLowerCase();
+          const contentType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+          
+          const r2Url = await uploadToR2(fileBuffer, `menu-images/${filename}`, contentType);
+          await storage.updateMenuItem(item.id, { imageUrl: r2Url });
+          results.push(`[OK] ${item.name}`);
+          migrated++;
+        } catch (error) {
+          results.push(`[FAIL] ${item.name} - greška pri upload-u`);
+          failed++;
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        message: `Migracija završena: ${migrated} migrirano, ${skipped} preskočeno, ${failed} neuspešno`,
+        migrated,
+        skipped,
+        failed,
+        results
+      });
+    } catch (error) {
+      console.error("Error migrating images:", error);
+      res.status(500).json({ success: false, message: "Greška pri migraciji slika" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return { server: httpServer, seedAdminUser };

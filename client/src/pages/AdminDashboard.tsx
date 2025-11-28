@@ -2581,6 +2581,50 @@ export default function AdminDashboard() {
                   <h3 className="text-lg font-semibold mb-4">QR Kod za Jelovnik</h3>
                   <QRCodeGenerator />
                 </div>
+
+                <div className="border-t border-white/10 pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Migracija Slika na R2</h3>
+                  <p className="text-sm text-gray-400 mb-4">
+                    Prebaci sve postojeće meni slike na Cloudflare R2 za trajno čuvanje.
+                  </p>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        toast.info("Migracija u toku...", {
+                          description: "Ovo može potrajati nekoliko minuta",
+                        });
+                        const response = await fetch("/api/migrate-images-to-r2", {
+                          method: "POST",
+                          credentials: "include",
+                        });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                          toast.success("Migracija završena!", {
+                            description: data.message,
+                          });
+                        } else {
+                          toast.error("Greška", {
+                            description: data.message,
+                          });
+                        }
+                      } catch (error) {
+                        toast.error("Greška", {
+                          description: "Neuspela migracija slika",
+                        });
+                      }
+                    }}
+                    className="bg-orange-600 hover:bg-orange-700 cursor-pointer"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    ☁️ Migriraj Slike na R2
+                  </Button>
+                  <div className="p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg mt-4">
+                    <p className="text-xs sm:text-sm text-orange-300">
+                      ⚠️ Pokreni samo jednom. Sve slike iz /menu-images/ biće prebačene na Cloudflare R2.
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
