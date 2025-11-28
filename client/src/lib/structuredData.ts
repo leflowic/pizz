@@ -78,7 +78,7 @@ export const menuStructuredData = (menuItems: any[]) => ({
   "@type": "Menu",
   "@id": "https://latavernetta.rs/jelovnik#menu",
   "name": "La Tavernetta Meni",
-  "description": "Kompletan meni sa pizzama, pastama, desertima i pićima",
+  "description": "Kompletan meni sa pizzama, pastama, salatama i pićima",
   "inLanguage": "sr-RS",
   "hasMenuSection": [
     {

@@ -14,10 +14,9 @@ const categories = [
   { id: "jela", name: "Glavna Jela", icon: Beef, color: "bg-primary" },
   { id: "dodaci", name: "Prilozi", icon: Utensils, color: "bg-secondary" },
   { id: "dorucak", name: "Doručak", icon: Cookie, color: "bg-primary" },
-  { id: "deserti", name: "Deserti", icon: Cookie, color: "bg-secondary" },
-  { id: "kafa", name: "Topli Napici", icon: Coffee, color: "bg-primary" },
-  { id: "sokovi", name: "Bezalkoholna", icon: GlassWater, color: "bg-secondary" },
-  { id: "alkohol", name: "Alkohol", icon: Wine, color: "bg-primary" },
+  { id: "kafa", name: "Topli Napici", icon: Coffee, color: "bg-secondary" },
+  { id: "sokovi", name: "Bezalkoholna", icon: GlassWater, color: "bg-primary" },
+  { id: "alkohol", name: "Alkohol", icon: Wine, color: "bg-secondary" },
 ];
 
 // Mapping database categories to UI categories
@@ -40,9 +39,7 @@ const categoryMapping: Record<string, string> = {
   "coffee": "kafa",
   "dodaci": "dodaci",
   "appetizer": "dodaci",
-  "side": "dodaci",
-  "deserti": "deserti",
-  "dessert": "deserti"
+  "side": "dodaci"
 };
 
 const pizzaImages: Record<string, string> = {
@@ -85,7 +82,6 @@ export default function Jelovnik() {
     jela: [],
     dodaci: [],
     dorucak: [],
-    deserti: [],
     kafa: [],
     sokovi: [],
     alkohol: []
@@ -116,7 +112,6 @@ export default function Jelovnik() {
           jela: [],
           dodaci: [],
           dorucak: [],
-          deserti: [],
           kafa: [],
           sokovi: [],
           alkohol: []
@@ -223,7 +218,7 @@ export default function Jelovnik() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <SEO
         title="Jelovnik - Pizza, Pasta, Salate | La Tavernetta Beograd"
-        description="Kompletan jelovnik La Tavernetta restorana: autentične italijanske pizze (32cm, 42cm, 50cm), paste, salate, deserti, pića. Pregledajte cene i naručite online. Dimitrija Tucovića 119."
+        description="Kompletan jelovnik La Tavernetta restorana: autentične italijanske pizze (32cm, 42cm), paste, salate, sendviči, pića. Pregledajte cene i naručite online. Dimitrija Tucovića 119."
         canonical="https://latavernetta.rs/jelovnik"
         keywords="jelovnik beograd, pizza cene, pasta cene, italijanski restoran meni, la tavernetta jelovnik, dostava pizza, online naručivanje"
         ogImage="https://latavernetta.rs/pizzas/margherita.png"
