@@ -38,8 +38,10 @@ const categoryMapping: Record<string, string> = {
   "alcohol": "alkohol",
   "topli_napici": "kafa",
   "coffee": "kafa",
+  "dodaci": "dodaci",
   "appetizer": "dodaci",
   "side": "dodaci",
+  "deserti": "deserti",
   "dessert": "deserti"
 };
 
